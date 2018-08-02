@@ -1,5 +1,3 @@
-# AssetInspector Reference
-
 ## How To Use
 1. Open the window from Window/Asset Inspector.
 2. Select a asset from Project window to edit.
