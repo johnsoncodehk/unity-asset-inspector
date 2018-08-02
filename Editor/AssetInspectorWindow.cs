@@ -1,7 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Profiling;
+using UnityEngine;
 using UnityEditor;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -20,14 +18,14 @@ public class AssetInspectorWindow : EditorWindow {
 	private bool m_MainFoldOut = true;
 
 	void OnGUI() {
-		this.m_ScrollPosition = EditorGUILayout.BeginScrollView(this.m_ScrollPosition, new GUILayoutOption[0]);
+		m_ScrollPosition = EditorGUILayout.BeginScrollView(m_ScrollPosition, new GUILayoutOption[0]);
 		EditorGUILayout.Space();
-		this.DrawAsset();
+		DrawAsset();
 		EditorGUILayout.EndScrollView();
 	}
 	void OnSelectionChange() {
-		this.m_Folds.Clear();
-		this.Repaint();
+		m_Folds.Clear();
+		Repaint();
 	}
 
 	private void DrawAsset() {
@@ -42,44 +40,44 @@ public class AssetInspectorWindow : EditorWindow {
 
 		AssetImporter assetImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(activeObject));
 
-		if (this.m_MainFoldOut = EditorGUILayout.Foldout(this.m_MainFoldOut, "Meta Data")) {
+		if (m_MainFoldOut = EditorGUILayout.Foldout(m_MainFoldOut, "Meta Data")) {
 			EditorGUI.indentLevel++;
 
-			this.LabelField("GUID", AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(activeObject)));
-			this.LabelField("Time Stamp", assetImporter.assetTimeStamp.ToString());
+			LabelField("GUID", AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(activeObject)));
+			LabelField("Time Stamp", assetImporter.assetTimeStamp.ToString());
 			Object mainObj = AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GetAssetPath(activeObject));
 			Object newMainObj = EditorGUILayout.ObjectField("Main Object", mainObj, typeof(Object), false);
 			if (newMainObj != null && mainObj != newMainObj) {
 				if (AssetDatabase.GetAssetPath(mainObj) == AssetDatabase.GetAssetPath(newMainObj)) {
-					this.SetMainObject(newMainObj);
+					SetMainObject(newMainObj);
 				}
 				else {
 					Debug.Log(newMainObj.name + " is not child asset.");
 				}
 			}
-			this.TextArea(assetImporter, "User Data", assetImporter.userData, userData => assetImporter.userData = userData);
-			this.LabelField("", "");
+			TextArea(assetImporter, "User Data", assetImporter.userData, userData => assetImporter.userData = userData);
+			LabelField("", "");
 
 			EditorGUI.indentLevel--;
 		}
 
-		this.m_CopyingObj = EditorGUILayout.ObjectField("Copying Asset", this.m_CopyingObj, typeof(Object), false);
-		this.DrawButton(this.m_CopyingObj != null, "Paste Asset As New", () => {
-			object obj = System.Activator.CreateInstance(this.m_CopyingObj.GetType());
+		m_CopyingObj = EditorGUILayout.ObjectField("Copying Asset", m_CopyingObj, typeof(Object), false);
+		DrawButton(m_CopyingObj != null, "Paste Asset As New", () => {
+			object obj = System.Activator.CreateInstance(m_CopyingObj.GetType());
 			if (obj != null) {
 				Object unityObj = obj as Object;
 				if (unityObj != null) {
-					EditorUtility.CopySerialized(this.m_CopyingObj, unityObj);
+					EditorUtility.CopySerialized(m_CopyingObj, unityObj);
 					AssetDatabase.AddObjectToAsset(unityObj, Selection.activeObject);
 					AssetDatabase.SaveAssets();
 					AssetDatabase.Refresh();
 					Selection.activeObject = unityObj;
 				}
 				else
-					Debug.Log(this.m_CopyingObj.GetType() + " is not a Unity Object.");
+					Debug.Log(m_CopyingObj.GetType() + " is not a Unity Object.");
 			}
 			else
-				Debug.Log(this.m_CopyingObj.GetType() + " can not Instance.");
+				Debug.Log(m_CopyingObj.GetType() + " can not Instance.");
 		});
 
 
@@ -91,24 +89,24 @@ public class AssetInspectorWindow : EditorWindow {
 			allAsset = AssetDatabase.LoadAllAssetsAtPath(assetPath).Where(asset => asset != null).ToArray();
 		}
 		foreach (Object asset in allAsset) {
-			this.DrawObject(asset);
+			DrawObject(asset);
 		}
 		EditorGUI.indentLevel--;
 	}
 	private void DrawObject(Object obj) {
 		int instanceID = obj.GetInstanceID();
-		this.m_Folds[instanceID] = EditorGUILayout.InspectorTitlebar(this.GetFold(instanceID), obj);
-		if (this.m_Folds[instanceID]) {
+		m_Folds[instanceID] = EditorGUILayout.InspectorTitlebar(GetFold(instanceID), obj);
+		if (m_Folds[instanceID]) {
 			AssetImporter assetImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(obj));
-			// this.LabelField("Instance ID", obj.GetInstanceID().ToString());
-			this.LabelField("File ID", this.GetFileId(obj).ToString());
-			this.EnumPopup(assetImporter, "Hide Flags", obj.hideFlags, newHideFlags => obj.hideFlags = (HideFlags)newHideFlags);
-			this.TextField(assetImporter, "Name", obj.name, newName => obj.name = newName);
-			this.LabelField("Is Main Asset", AssetDatabase.IsMainAsset(obj).ToString());
+			// LabelField("Instance ID", obj.GetInstanceID().ToString());
+			LabelField("File ID", GetFileId(obj).ToString());
+			EnumPopup(assetImporter, "Hide Flags", obj.hideFlags, newHideFlags => obj.hideFlags = (HideFlags)newHideFlags);
+			TextField(assetImporter, "Name", obj.name, newName => obj.name = newName);
+			LabelField("Is Main Asset", AssetDatabase.IsMainAsset(obj).ToString());
 			// SerializedObject serializedObject = new SerializedObject(obj);
-			// this.PropertyField(assetImporter, serializedObject, "m_PrefabParentObject");
-			// this.PropertyField(assetImporter, serializedObject, "m_PrefabInternal");
-			this.DrawObjectEditButtons(obj);
+			// PropertyField(assetImporter, serializedObject, "m_PrefabParentObject");
+			// PropertyField(assetImporter, serializedObject, "m_PrefabInternal");
+			DrawObjectEditButtons(obj);
 		}
 	}
 	private long GetFileId(Object obj) {
@@ -119,39 +117,40 @@ public class AssetInspectorWindow : EditorWindow {
 		return localIdProp.longValue;
 	}
 	private bool GetFold(int instanceID) {
-		if (!this.m_Folds.ContainsKey(instanceID)) {
-			this.m_Folds[instanceID] = Selection.objects.Any(o => o.GetInstanceID() == instanceID);
+		if (!m_Folds.ContainsKey(instanceID)) {
+			m_Folds[instanceID] = Selection.objects.Any(o => o.GetInstanceID() == instanceID);
 		}
-		return this.m_Folds[instanceID];
+		return m_Folds[instanceID];
 	}
 	private void DrawObjectEditButtons(Object obj) {
 		AssetImporter assetImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(obj));
 
 		EditorGUILayout.BeginHorizontal();
 		GUILayout.Space(EditorGUI.indentLevel * 20);
-		this.DrawButton(true, "Copy Asset", () => {
-			this.m_CopyingObj = null;
+		DrawButton(true, "Copy Asset", () => {
+			m_CopyingObj = null;
 			object temp = System.Activator.CreateInstance(obj.GetType());
 			if (temp != null) {
 				Object unityObj = temp as Object;
 				if (unityObj != null) {
 					EditorUtility.CopySerialized(obj, unityObj);
-					this.m_CopyingObj = unityObj;
+					m_CopyingObj = unityObj;
 				}
 				else
 					Debug.Log(obj.GetType() + " is not a Unity Object.");
 			}
 			else
-				Debug.Log(this.m_CopyingObj.GetType() + " can not Instance.");
+				Debug.Log(m_CopyingObj.GetType() + " can not Instance.");
 		});
-		this.DrawButton(this.m_CopyingObj != null && this.m_CopyingObj.GetType() == obj.GetType(), "Paste Asset Values", () => {
+		DrawButton(m_CopyingObj != null && m_CopyingObj.GetType() == obj.GetType(), "Paste Asset Values", () => {
 			if (EditorUtility.DisplayDialog("Paste selected asset?", "   " + AssetDatabase.GetAssetPath(obj) + "\n    - " + obj.name + " (" + obj.GetType().Name + ")" + "\n\nYou cannot undo this action.", "Paste", "Cancel")) {
-				EditorUtility.CopySerialized(this.m_CopyingObj, obj);
+				EditorUtility.CopySerialized(m_CopyingObj, obj);
+				EditorUtility.SetDirty(assetImporter);
 				assetImporter.SaveAndReimport();
 			}
 		});
-		this.DrawButton(!AssetDatabase.IsMainAsset(obj), "Delete", () => {
-			this.DeleteObject(obj);
+		DrawButton(!AssetDatabase.IsMainAsset(obj), "Delete", () => {
+			DeleteObject(obj);
 		});
 		EditorGUILayout.EndHorizontal();
 	}
@@ -163,6 +162,7 @@ public class AssetInspectorWindow : EditorWindow {
 		string validate = AssetDatabase.ValidateMoveAsset(assetPath, newPath);
 		if (string.IsNullOrEmpty(validate) || assetPath == newPath) {
 			AssetDatabase.SetMainObject(obj, AssetDatabase.GetAssetPath(obj));
+			EditorUtility.SetDirty(assetImporter);
 			assetImporter.SaveAndReimport();
 			AssetDatabase.MoveAsset(assetPath, newPath);
 			assetPath = newPath;
@@ -177,6 +177,7 @@ public class AssetInspectorWindow : EditorWindow {
 			AssetImporter assetImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(obj));
 			Object mainAsset = AssetDatabase.LoadMainAssetAtPath(assetPath);
 			Object.DestroyImmediate(obj, true);
+			EditorUtility.SetDirty(assetImporter);
 			assetImporter.SaveAndReimport();
 			Selection.activeObject = mainAsset;
 		}
@@ -194,6 +195,7 @@ public class AssetInspectorWindow : EditorWindow {
 		string newVal = EditorGUILayout.DelayedTextField(key, val);
 		if (newVal != val) {
 			setter(newVal);
+			EditorUtility.SetDirty(assetImporter);
 			assetImporter.SaveAndReimport();
 		}
 	}
@@ -230,6 +232,7 @@ public class AssetInspectorWindow : EditorWindow {
 		System.Enum newVal = EditorGUILayout.EnumPopup(key, val);
 		if (newVal.ToString() != val.ToString()) {
 			setter(newVal);
+			EditorUtility.SetDirty(assetImporter);
 			assetImporter.SaveAndReimport();
 		}
 	}
