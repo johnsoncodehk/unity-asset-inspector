@@ -1,27 +1,34 @@
-## How To Use
+# unity-asset-inspector
+
+### Setup
+
+The following line needs to be added to your Packages/manifest.json file in your Unity Project under the dependencies section:
+
+```json
+"com.johnsoncodehk.unity-asset-inspector": "https://github.com/johnsoncodehk/unity-asset-inspector.git"
+```
+
+### How To Use
+
 1. Open the window from Window/Asset Inspector.
 2. Select a asset from Project window to edit.
 
-## Editable filed:
+### Editable filed
 
-- Meta:
-	- User Data
-	- Main Object
-		- Drag target main object to Main Object field.
+#### Meta Data
 
-- Assets:
-	- Name
-	- Hide Flags
+- File Name
+- User Data
+- Main Object
 
-## Features
+#### Child Asset
 
-- Delete child asset
-	1. Click Delete button from Asset view.
+- Name
+- Hide Flags
 
-- Copy child asset
-	1. Click Copy Asset from Asset view.
-	1. Click Paste Asset Values from target Asset view.
+### Asset MenuItem
 
-- Add child asset
-	1. Copy a child asset.
-	1. Click Paste Asset As New from Asset view.
+- Delete Asset
+- Copy Asset
+- Paste Asset Data
+- Paste Asset As New
