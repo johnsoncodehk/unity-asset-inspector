@@ -10,7 +10,7 @@ public class AssetInspectorWindow : EditorWindow
     static void Init()
     {
         AssetInspectorWindow editor = (AssetInspectorWindow)EditorWindow.GetWindow(typeof(AssetInspectorWindow));
-        editor.titleContent = new GUIContent("AssetInspector");
+        editor.titleContent = new GUIContent("Asset Inspector");
     }
 
     [MenuItem("CONTEXT/Object/Delete Asset")]
