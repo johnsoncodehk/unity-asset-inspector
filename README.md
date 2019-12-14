@@ -13,9 +13,9 @@ The following line needs to be added to your Packages/manifest.json file in your
 1. Open the window from Window/Asset Inspector.
 2. Select a asset from Project window to edit.
 
-### Editable filed
+### Editable fileds
 
-#### Meta Data
+#### Asset Meta Data
 
 - File Name
 - User Data
@@ -28,7 +28,7 @@ The following line needs to be added to your Packages/manifest.json file in your
 
 ### Asset MenuItem
 
-- Delete Asset
+- Delete Child Asset
 - Copy Asset
 - Paste Asset Data
-- Paste Asset As New
+- Paste Asset As Child

@@ -13,8 +13,8 @@ public class AssetInspectorWindow : EditorWindow
         editor.titleContent = new GUIContent("Asset Inspector");
     }
 
-    [MenuItem("CONTEXT/Object/Delete Asset")]
-    static void DeleteAssetMenuItem(MenuCommand command)
+    [MenuItem("CONTEXT/Object/Delete Child Asset")]
+    static void DeleteChildAssetMenuItem(MenuCommand command)
     {
         if (EditorUtility.DisplayDialog("Delete selected asset?", "   " + AssetDatabase.GetAssetPath(command.context) + "\n    - " + command.context.name + "\n\nYou cannot undo this action.", "Delete", "Cancel"))
         {
@@ -28,8 +28,8 @@ public class AssetInspectorWindow : EditorWindow
         }
     }
 
-    [MenuItem("CONTEXT/Object/Delete Asset", true)]
-    static bool DeleteAssetMenuItemValidate(MenuCommand command)
+    [MenuItem("CONTEXT/Object/Delete Child Asset", true)]
+    static bool DeleteChildAssetMenuItemValidate(MenuCommand command)
     {
         return !string.IsNullOrEmpty(AssetDatabase.GetAssetPath(command.context))
             && !AssetDatabase.IsMainAsset(command.context);
@@ -62,8 +62,8 @@ public class AssetInspectorWindow : EditorWindow
             && m_AssetCopySource.GetType() == command.context.GetType();
     }
 
-    [MenuItem("CONTEXT/Object/Paste Asset As New")]
-    static void PasteAssetAsNewMenuItem(MenuCommand command)
+    [MenuItem("CONTEXT/Object/Paste Asset As Child")]
+    static void PasteAssetAsChildMenuItem(MenuCommand command)
     {
         Object assetCopy = System.Activator.CreateInstance(m_AssetCopySource.GetType()) as Object;
         EditorUtility.CopySerialized(m_AssetCopySource, assetCopy);
@@ -72,8 +72,8 @@ public class AssetInspectorWindow : EditorWindow
         AssetDatabase.Refresh();
     }
 
-    [MenuItem("CONTEXT/Object/Paste Asset As New", true)]
-    static bool PasteAssetAsNewMenuItemValidate(MenuCommand command)
+    [MenuItem("CONTEXT/Object/Paste Asset As Child", true)]
+    static bool PasteAssetAsChildMenuItemValidate(MenuCommand command)
     {
         return !string.IsNullOrEmpty(AssetDatabase.GetAssetPath(command.context))
             && m_AssetCopySource;
